@@ -6,13 +6,13 @@ const UserController = require('../controllers/user');
 
 
 //crea un usuario
-router.route('/login')
-    .post(UserController.logIn);
+router.route('/user')
+    .post(UserController.user);
 //inicia sesión
-router.route('/qr')
-    .post(UserController.qr);
+router.route('/login')
+    .post(UserController.login);
 //Obtiene todos los usuario dependiendo de su sesión
-router.route('/verify')
+/*router.route('/verify')
     .post(UserController.verifyToken);
 //Obtiene un usuario
 router.route('/user/:id')
@@ -22,7 +22,7 @@ router.route('/user/:id')
     .put(UserController.updateUser);
 //Elimina un usuario
 router.route('/user/:id')
-    .delete(UserController.deleteUser);
+    .delete(UserController.deleteUser);*/
 
 
 module.exports = router;

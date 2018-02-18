@@ -5,10 +5,23 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcrypt-nodejs')
 
 const UserSchema = new Schema({
-    id:{ type: String, required:true},
-    device:{type: Number, required:true},
-    secret:{ type: String, required:true},
-    status: { type: Number, required:true}
+    user_id:{ 
+      type: String, 
+      required:true
+    },
+    device:{
+      type: Number, 
+      unique: true,
+      required:true
+    },
+    secret:{ 
+      type: String, 
+      required:true
+    },
+    status: { 
+      type: Number, 
+      required:true
+    }
 },{
     timestamps: { createdAt: 'createdAt',
                   updatedAt: 'updatedAt' }

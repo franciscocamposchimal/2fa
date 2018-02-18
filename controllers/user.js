@@ -14,23 +14,33 @@ const jwt = require('../services/jwt');
 
 //acciones
 module.exports = {
-    qr: async (req,res,next) => {
-        const secret = req.body.secret;
+    user: async (req,res,next) => {
+        //recibe el id, tel del usuario y genero su secret
+        const user_id = req.body.user_id;
+        const device = parseInt(req.body.device);
+        const secret = speakeasy.generateSecret({length: 20}).base32;
+        //creamos un nuevo usuario
+        const newUser = new User();
+            newUser.user_id = user_id;
+            newUser.device = device;
+            newUser.secret = secret;
+            newUser.status = 0;
+    
+            await saveUser.save( (err, userStored) =>{
+                if(err) return handleError(err);   
+            });
 
-        const qrData = `otpauth://totp/ProShop?secret=${secret}`
-        const url = await QRCode.toDataURL(qrData);
+            const qrData = `otpauth://totp/ProShop?secret=${secret}`
+            const url = await QRCode.toDataURL(qrData);
         
-        if(!url) 
-            return res.status(200).json({error: 'Error'});
-        else
-            return res.status(200).json({url:url});
+            if(!url) 
+                return res.status(200).json({error: 'Error'});
+            else
+                return res.status(200).json({url:url});
     },
 
-    logIn: async (req,res,next) => {
-        
-        const secret = speakeasy.generateSecret({length: 20}).base32;
+    login: async (req,res,next) => {
 
-        return res.status(200).json({secret: secret}); // Save this value to your DB for the user
     },
 
     verifyToken: async (req,res,next) => {
