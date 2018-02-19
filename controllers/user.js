@@ -19,6 +19,10 @@ module.exports = {
         const user_id = req.body.user_id;
         const device = parseInt(req.body.device);
         const secret = speakeasy.generateSecret({length: 20}).base32;
+        //evitamos registros duplicados
+        const findUser = await User.findOne({device: device});
+        if(findUser)return res.status(200).json({url:{}});
+
         //creamos un nuevo usuario
         const newUser = new User();
             newUser.user_id = user_id;
@@ -26,52 +30,43 @@ module.exports = {
             newUser.secret = secret;
             newUser.status = 0;
     
-            await saveUser.save( (err, userStored) =>{
-                if(err) return handleError(err);   
+            await newUser.save( (err, userStored) =>{
+                if(err) return res.status(200).json(err);   
             });
 
-            const qrData = `otpauth://totp/ProShop?secret=${secret}`
+            const qrData = `otpauth://totp/ProShop?secret=${secret}&issuer=Club%20de%20Golf%20Ceiba`
             const url = await QRCode.toDataURL(qrData);
         
             if(!url) 
-                return res.status(200).json({error: 'Error'});
+                return res.status(200).json({url: {}});
             else
                 return res.status(200).json({url:url});
     },
 
     login: async (req,res,next) => {
+        const userToken = req.body.token;
+        const device_user = req.body.device;
 
+        const findUser = await User.findOne({device: device_user});
+        if(!findUser)
+            return res.status(200).json({user_id: {}});
+        else
+            
+            var verified = speakeasy.totp.verify({
+                secret: findUser.secret,
+                encoding: 'base32',
+                token: userToken
+                });
+            if(verified)
+                return res.status(200).json({user_id: findUser.user_id});
+            else
+                return res.status(200).json({user_id: {}});
     },
 
-    verifyToken: async (req,res,next) => {
-        // This is provided the by the user via form POST
-        var userToken = req.body.token;
-
-        // Load the secret.base32 from their user record in database
-        var secret = req.body.secret;
-
-        // Verify that the user token matches what it should at this moment
-        var verified = speakeasy.totp.verify({
-        secret: secret,
-        encoding: 'base32',
-        token: userToken
-        });
-
-        return res.status(200).json({pass: verified});
-    },
-
-    getUser: async (req,res,next) => {
-
-
-    },
-
-    updateUser: async (req,res,next) => {
- 
-        
-    },
-
-    deleteUser: async (req,res,next) => {
-        
+    delete: async (req,res,next) => {
+        const device = parseInt(req.params.id);
+        const findUser = await User.findOneAndRemove({device: device});
+        if(findUser)return res.status(200).json({device:true});
     }
 
 }

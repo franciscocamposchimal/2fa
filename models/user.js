@@ -10,8 +10,7 @@ const UserSchema = new Schema({
       required:true
     },
     device:{
-      type: Number, 
-      unique: true,
+      type: Number,
       required:true
     },
     secret:{ 

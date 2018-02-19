@@ -20,9 +20,10 @@ router.route('/user/:id')
 //Actualiza un usuario
 router.route('/user/:id')
     .put(UserController.updateUser);
+    */
 //Elimina un usuario
 router.route('/user/:id')
-    .delete(UserController.deleteUser);*/
+    .delete(UserController.delete);
 
 
 module.exports = router;
