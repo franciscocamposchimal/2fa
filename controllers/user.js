@@ -45,22 +45,29 @@ module.exports = {
 
     login: async (req,res,next) => {
         const userToken = req.body.token;
-        const device_user = req.body.device;
+        const user_id = req.body.user_id;
 
-        const findUser = await User.findOne({device: device_user});
-        if(!findUser)
-            return res.status(200).json({user_id: {}});
+        const findUser = await User.find({user_id: user_id},'secret user_id device');
+        if(findUser == 0)
+            return res.status(200).json({user_id: []});
         else
-            
-            var verified = speakeasy.totp.verify({
-                secret: findUser.secret,
-                encoding: 'base32',
-                token: userToken
-                });
-            if(verified)
-                return res.status(200).json({user_id: findUser.user_id});
-            else
-                return res.status(200).json({user_id: {}});
+            var arr = findUser.filter((item)=>{
+                var verified = speakeasy.totp.verify({
+                    secret: item.secret,
+                    encoding: 'base32',
+                    token: userToken
+                    });
+                if(verified)
+                    return true;
+            });
+        
+        if(arr == 0)
+            return res.status(400).json({user:false});
+        else
+            return res.status(200).json({user:{ 
+                                            user_id: arr[0].user_id,
+                                            device: arr[0].device,
+                                        }});
     },
 
     delete: async (req,res,next) => {
