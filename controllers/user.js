@@ -49,7 +49,7 @@ module.exports = {
 
         const findUser = await User.find({user_id: user_id},'secret user_id device');
         if(findUser == 0)
-            return res.status(200).json({user_id: []});
+            return res.status(200).json({user_id: false});
         else
             var arr = findUser.filter((item)=>{
                 var verified = speakeasy.totp.verify({
