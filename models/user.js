@@ -9,6 +9,10 @@ const UserSchema = new Schema({
       type: String, 
       required:true
     },
+    user_name:{ 
+      type: String, 
+      required:true
+    },
     device:{
       type: Number,
       required:true

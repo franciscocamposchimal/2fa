@@ -18,6 +18,7 @@ module.exports = {
         //recibe el id, tel del usuario y genero su secret
         const user_id = req.body.user_id;
         const device = parseInt(req.body.device);
+        const user_name = req.body.user_name;
         const secret = speakeasy.generateSecret({length: 20}).base32;
         //evitamos registros duplicados
         const findUser = await User.findOne({device: device});
@@ -26,6 +27,7 @@ module.exports = {
         //creamos un nuevo usuario
         const newUser = new User();
             newUser.user_id = user_id;
+            newUser.user_name = user_name;
             newUser.device = device;
             newUser.secret = secret;
             newUser.status = 0;
@@ -47,7 +49,7 @@ module.exports = {
         const userToken = req.body.token;
         const user_id = req.body.user_id;
 
-        const findUser = await User.find({user_id: user_id},'secret user_id device');
+        const findUser = await User.find({user_id: user_id},'secret user_id user_name device');
         if(findUser == 0)
             return res.status(404).json({user: false});
         else
@@ -66,6 +68,7 @@ module.exports = {
         else
             return res.status(200).json({user:{ 
                                             user_id: arr[0].user_id,
+                                            user_name : arr[0].user_name,
                                             device: arr[0].device,
                                         }});
     },
