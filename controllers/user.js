@@ -36,7 +36,8 @@ module.exports = {
                 if(err) return res.status(200).json(err);   
             });
 
-            const qrData = `otpauth://totp/ProShop?secret=${secret}&issuer=Club%20de%20Golf%20Ceiba`
+            const qrData = `otpauth://totp/ProShop?secret=${secret}&issuer=Club%20de%20Golf%20Ceiba&period=60`
+            
             const url = await QRCode.toDataURL(qrData);
         
             if(!url) 
@@ -71,6 +72,15 @@ module.exports = {
                                             user_name : arr[0].user_name,
                                             device: arr[0].device,
                                         }});
+    },
+
+    getAll: async (req,res,next) => {
+        const user_id = parseInt(req.params.id);
+        const findDevices = await User.find({user_id: user_id});
+        if(findDevices == 1)
+            return res.status(200).json({devices:findDevices});
+        else
+            return res.status(200).json({devices:findDevices});
     },
 
     delete: async (req,res,next) => {

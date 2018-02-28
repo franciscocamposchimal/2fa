@@ -13,12 +13,12 @@ router.route('/login')
     .post(UserController.login);
 //Obtiene todos los usuario dependiendo de su sesión
 /*router.route('/verify')
-    .post(UserController.verifyToken);
-//Obtiene un usuario
+    .post(UserController.verifyToken);*/
+//Obtiene todos los devices
 router.route('/user/:id')
-    .get(UserController.getUser);
+    .get(UserController.getAll);
 //Actualiza un usuario
-router.route('/user/:id')
+/*router.route('/user/:id')
     .put(UserController.updateUser);
     */
 //Elimina un usuario
