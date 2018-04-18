@@ -49,12 +49,13 @@ module.exports = {
     login: async (req,res,next) => {
         const userToken = req.body.token;
         const user_id = req.body.user_id;
+        var arr = [];
 
         const findUser = await User.find({user_id: user_id},'secret user_id user_name device');
         if(findUser == 0)
             return res.status(404).json({user: false});
         else
-            var arr = findUser.filter((item)=>{
+             arr = findUser.filter((item)=>{
                 var verified = speakeasy.totp.verify({
                     secret: item.secret,
                     encoding: 'base32',
